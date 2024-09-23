@@ -11,32 +11,36 @@ public  class tictac {
         
     tictac db = new tictac();
      
-       outer: for (int i = 1; i <=9; i++) {
+       db.displayboard();
 
-            db.displayboard();
+       for (int i = 1; i <7; i++) {
+
+        System.out.println("winStatus after choose(0): " + db.win() + i);
+        db.win();
+       
             db.choose(1);
-            db.win();
-            if (db.win() == 1)
+            if (db.win()  == 1)
             {
-              break outer;
+              break ;
             }
+            if (i== 5 && db.win() == 3)
+            {
+              System.out.println("\n\tNo winner - tie!\n\t***END OF GAME***");
+              break;
+            } 
             db.choose(0);
             if (db.win() == 1)
             {
-              break outer;
+              break ;
             }
-            if (i==9 && db.win() == 3)
-             {
-                System.out.println("\n\tNo winner - tie!\n\t***END OF GAME***");
-                break outer;
-            } 
             
-          }
-          
-          
+            
+         }
+           
             
     }
          
+
 
 
     public void displayboard (){
@@ -378,7 +382,7 @@ else {
      else if (board[2] == board[5] && board[2] == board[8])
      {
          
-         if (board[2] == 0) {
+         if (board[2] == 'O') {
          
              System.out.println("\n\nPlayer O won with column 2 - 5 - 8\n   END OF GAME\n");
  
@@ -396,11 +400,11 @@ else {
          if (board[3] == 'O') {
          System.out.println("\n\nPlayer O won with column 3 - 6 - 9\n   END OF GAME\n");
          }
-         else { 
+         else if (board[3] == 'X')
+         { 
          System.out.println("\n\nPlayer X won with column 3 - 6 - 9\n   END OF GAME\n"); 
          }
              
-         
           return 1;
      }
      else if (board[1] == board[5] && board[1] == board[9])
