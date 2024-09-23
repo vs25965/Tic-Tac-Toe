@@ -13,11 +13,9 @@ public  class tictac {
      
        db.displayboard();
 
-       for (int i = 1; i <7; i++) {
+       for (int i = 1; i <6; i++) {
 
-        System.out.println("winStatus after choose(0): " + db.win() + i);
-        db.win();
-       
+            db.win();
             db.choose(1);
             if (db.win()  == 1)
             {
