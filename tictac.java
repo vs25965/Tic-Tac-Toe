@@ -1,48 +1,55 @@
+import java.util.Random;
 import java.util.Scanner;
 
+public class tictac {
 
-public  class tictac {
-
- 
     char board[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-    char number = '1'; 
-    
+    char number = '1';
+
     public static void main(String[] args) {
+
+        tictac db = new tictac();
+        Scanner scanner = new Scanner(System.in);
+        boolean playAgain = true;
+
+        System.out.println("\n\n**Welcome to Tic Tac Toe Game**");
+        System.out.println("\n\nChoose game mode: Human vs Human type 1 or 2 for Human vs Console\n");
+        String gameModeT = scanner.next().trim();
+        //createas a boolean to play with the console and sets it to 2 (which is true)
+        String gameMode = db.validator(gameModeT,"2","1");
+        boolean playWithComputer = (gameMode.equals("2"));
+
+        while(playAgain){
+
+            db.displayboard();
+            for (int i = 1; i <= 5; i++) {
+                db.win();
+                db.choose(1, false); // Player 1 is always human
+                if (db.win() == 1) {
+                    break;
+                }
+                if (i == 5 && db.win() == 3) {
+                    System.out.println("\n\tNo winner - tie!\n\t***END OF GAME***");
+                    break;
+                }
+                db.choose(0, playWithComputer); // Player 2 can be human or computer
+                if (db.win() == 1) {
+                    break;
+                }
+            }
+
+            System.out.println("Do you want to play again? (yes/no)");
+            Scanner scanner1 = new Scanner(System.in);
+            String responseT = scanner1.nextLine().trim().toLowerCase();
+            String response = db.validator(responseT, "yes", "no");
+            playAgain = response.equals("yes");
+            db.resetBoard();
+        }
         
-    tictac db = new tictac();
-     
-       db.displayboard();
-
-       for (int i = 1; i <6; i++) {
-
-            db.win();
-            db.choose(1);
-            if (db.win()  == 1)
-            {
-              break ;
-            }
-            if (i== 5 && db.win() == 3)
-            {
-              System.out.println("\n\tNo winner - tie!\n\t***END OF GAME***");
-              break;
-            } 
-            db.choose(0);
-            if (db.win() == 1)
-            {
-              break ;
-            }
-            
-            
-         }
-           
-            
+        System.out.println("Thanks for playing!");
     }
-         
 
-
-
-    public void displayboard (){
-    
+    public void displayboard() {
         System.out.println("\n\t    *TTT Board *");
         System.out.println("\t___________________");
         System.out.print("\t|                 |");
@@ -56,392 +63,92 @@ public  class tictac {
         System.out.print("\t|_________________|");
     }
 
-    public void choose(int turn){
+    public void choose(int turn, boolean playWithComputer) {
+        char playerSymbol = (turn == 0) ? 'O' : 'X';
+        Scanner scanner = new Scanner(System.in);
 
- if (turn == 0)  {
+        //conditional checks if playWithComputer (true) and if its turn (O)
+        if (playWithComputer && turn == 0) {
+            Random random = new Random();
+            while (true) {
+                //generates a move between 1-9 (within the index from original board)
+                int move = random.nextInt(9) + 1;
+                if (board[move] != 'O' && board[move] != 'X') {
+                    board[move] = playerSymbol;
+                    displayboard();
+                    break;
+                }
+            }
+        } else {
+            while (true) {
+                boolean validMove = false;
+                System.out.println("\nChoose a number from the board = ");
+                String input = scanner.nextLine().trim(); // Remove leading and trailing whitespace
+                if (input.length() == 1 && Character.isDigit(input.charAt(0))) {
+                    number = input.charAt(0);
+                    for (int i = 1; i <= 9; i++) {
+                        if (number == board[i]) {
+                            board[i] = playerSymbol;
+                            displayboard();
+                            validMove = true;
+                            break;
+                        }
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter a single digit.");
+                    validMove = false;
+                }
 
-            System.out.println("\nChoose a number from the board = ");
-            Scanner in = new Scanner(System.in);
-            number = in.next().charAt(0);
-            
+                if (validMove) {
+                    break;
+                } 
+            }
+        }
+    }
 
-            
-if (number == board[1]) 
-{
-    board[1] = 'O';  
-    displayboard();    
-}
-else if (number ==  board[2])
-{
-    board[2] = 'O';
-    displayboard();
-   
-}
-else if (number ==  board[3])
-{
-    board[3] = 'O';
-    displayboard();
-   
-}
-else if (number ==  board[4])
-{
-    board[4] = 'O';
-    displayboard();
-   
-}
-else if (number == board[5])
-{
-    board[5] = 'O';
-    displayboard();
-  
-}
-else if (number == board[6])
-{
-    board[6] = 'O';
-    displayboard();
-    
-}
-else if (number == board[7])
-{
-    board[7] = 'O';
-    displayboard();
-  
-}
-else if (number == board[8])
-{
-    board[8] = 'O';
-    displayboard();
-  
-}
-else if (number == board[9])
-{
-    board[9] = 'O';
-    displayboard();
-   
-}
-else{
-    System.out.print("\n\nThe number you chose was already taken or You chose a number out of range\n");
-    while (number < board[1])
-    {
-        System.out.println("\nChoose a number from the board = ");
-        Scanner un = new Scanner(System.in);
-        number = un.next().charAt(0);
-        
-       
-        if (number == board[1]) 
-        {
-        board[1] = 'O';  
-        displayboard();  
-        break;
-        
-        }
-        else if (number ==  board[2])
-        {
-        board[2] = 'O';
-        displayboard();
-        break;
-        }
-        else if (number ==  board[3])
-        {
-        board[3] = 'O';
-        displayboard();
-        break;
-        }
-        else if (number ==  board[4])
-        {
-        board[4] = 'O';
-        displayboard();
-        break;
-        }
-        else if (number == board[5])
-        {
-        board[5] = 'O';
-        displayboard();
-        break; 
-        }
-        else if (number == board[6])
-        {
-        board[6] = 'O';
-        displayboard();
-        break;
-        }
-        else if (number == board[7])
-        {
-        board[7] = 'O';
-        displayboard();
-        break; 
-        }
-        else if (number == board[8])
-        {
-        board[8] = 'O';
-        displayboard();
-        break;
-        }
-        else if (number == board[9])
-        {
-        board[9] = 'O';
-        displayboard();
-        break;
-        } 
-        } 
-    } 
-}
-else {
+    public int win() {
+        int[][] winPositions = {
+            {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, // Rows
+            {1, 4, 7}, {2, 5, 8}, {3, 6, 9}, // Columns
+            {1, 5, 9}, {3, 5, 7}             // Diagonals
+        };
 
-    System.out.println("\nChoose a number from the board = ");
-    Scanner n = new Scanner(System.in);
-    number = n.next().charAt(0);
-    
-   
-    if (number == board[1]) 
-    {
-    board[1] = 'X';  
-    displayboard();  
-    
-    
-    }
-    else if (number ==  board[2])
-    {
-    board[2] = 'X';
-    displayboard();
-    
-    }
-    else if (number ==  board[3])
-    {
-    board[3] = 'X';
-    displayboard();
-    
-    }
-    else if (number ==  board[4])
-    {
-    board[4] = 'X';
-    displayboard();
-     
-    }
-    else if (number == board[5])
-    {
-    board[5] = 'X';
-    displayboard();
-      
-    }
-    else if (number == board[6])
-    {
-    board[6] = 'X';
-    displayboard();
-    
-    }
-    else if (number == board[7])
-    {
-    board[7] = 'X';
-    displayboard();
-      
-    }
-    else if (number == board[8])
-    {
-    board[8] = 'X';
-    displayboard();
-    
-    }
-    else if (number == board[9])
-    {
-    board[9] = 'X';
-    displayboard();
-     
-    }
-    else{
-    System.out.print("\n\nThe number you chose was already taken or You chose a number out of range\n");
-
-    while (number < board[1]){
-        System.out.println("\nChoose a number from the board = ");
-        Scanner u = new Scanner(System.in);
-        number = u.next().charAt(0);
-       
-       
-        if (number == board[1]) 
-        {
-        board[1] = 'X';  
-        displayboard();  
-        break;
-        
+        for (int[] pos : winPositions) {
+            if (board[pos[0]] == board[pos[1]] && board[pos[1]] == board[pos[2]]) {
+                if (board[pos[0]] == 'O') {
+                    System.out.println("\n\nPlayer O won with row " + pos[0] + " - " + pos[1] + " - " + pos[2] + "\n   END OF GAME\n");
+                } else if (board[pos[0]] == 'X') {
+                    System.out.println("\n\nPlayer X won with row " + pos[0] + " - " + pos[1] + " - " + pos[2] + "\n   END OF GAME\n");
+                }
+                return 1;
+            }
         }
-        else if (number ==  board[2])
-        {
-        board[2] = 'X';
-        displayboard();
-        break;
-        }
-        else if (number ==  board[3])
-        {
-        board[3] = 'X';
-        displayboard();
-        break;
-        }
-        else if (number ==  board[4])
-        {
-        board[4] = 'X';
-        displayboard();
-        break;
-        }
-        else if (number == board[5])
-        {
-        board[5] = 'X';
-        displayboard();
-        break; 
-        }
-        else if (number == board[6])
-        {
-        board[6] = 'X';
-        displayboard();
-        break;
-        }
-        else if (number == board[7])
-        {
-        board[7] = 'X';
-        displayboard();
-        break; 
-        }
-        else if (number == board[8])
-        {
-        board[8] = 'X';
-        displayboard();
-        break;
-        }
-        else if (number == board[9])
-        {
-        board[9] = 'X';
-        displayboard();
-        break;
-        } 
-      }
-    }
-  }    
- }
-
-
-
- public int win()     
- { 
-    
-     if (board[1] == board[2] && board[1] == board[3])
-     {
-        
-         if (board[1] == 0)    
-         {
-             System.out.println("\n\nPlayer O won with row 1 - 2 - 3\n   END OF GAME\n" );
-         } 
- 
-         else {
-             System.out.println("\n\nPlayer X won with row 1 - 2 - 3\n   END OF GAME\n");
-         } 
-          return 1;
-     }
-     else if (board[4] == board[5] && board[4] == board[6])
-     {
-         
-         if (board[4] == 0) {
-             System.out.println("\n\nPlayer O won with row 4 - 5 - 6\n   END OF GAME\n");
-         }
-         else{
-             
-             System.out.println("\n\nPlayer X won with row 4 - 5 - 6\n   END OF GAME\n");
-         }
-         
-          return 1; 
-     }
-     else if (board[7] == board[8] && board[7] == board[9])
-     {
-         
-         if (board[7] == 0) {
-             System.out.println("\n\nPlayer O won with row 7 - 8 - 9\n   END OF GAME\n");
-             return 1;   
-         }
-         else{
-             System.out.println("\n\nPlayer X won with row 7 - 8 - 9\n   END OF GAME\n" );
-             return 1;   
-         }
-        
-         
-        
-     }
-     else if (board[1] == board[4] && board[1] == board[7])
-     {
-        
-         if (board[1] == 0) {
-            
-             System.out.println("\n\nPlayer O won with column 1 - 4 - 7\n   END OF GAME\n");
-         }
-         else {
-         
-             System.out.println("\n\nPlayer X won with column 1 - 4 - 7\n   END OF GAME\n");
-         }
-        
-          return 1;   
-     }
-     else if (board[2] == board[5] && board[2] == board[8])
-     {
-         
-         if (board[2] == 'O') {
-         
-             System.out.println("\n\nPlayer O won with column 2 - 5 - 8\n   END OF GAME\n");
- 
-         }
-         else {
-           
-              System.out.println("\n\nPlayer X won with column 2 - 5 - 8\n   END OF GAME\n");
-         }
-     
-         return 1;  
-     }
-     else if (board[3] == board[6] && board[3] == board[9])
-     {
-         
-         if (board[3] == 'O') {
-         System.out.println("\n\nPlayer O won with column 3 - 6 - 9\n   END OF GAME\n");
-         }
-         else if (board[3] == 'X')
-         { 
-         System.out.println("\n\nPlayer X won with column 3 - 6 - 9\n   END OF GAME\n"); 
-         }
-             
-          return 1;
-     }
-     else if (board[1] == board[5] && board[1] == board[9])
-     {
-        
-         if (board[1] == 0) {
-             System.out.println("\n\nPlayer O won with diagonal 1 - 5 - 9\n   END OF GAME\n" );
-         }
-         else{
-             System.out.println("\n\nPlayer X won with diagonal 1 - 5 - 9\n   END OF GAME\n");
-         }
-       
-        return 1;
-     }
-     else if (board[3] == board[5] && board[3] == board[7])
-     {
-        
-         if (board[3] == 'X') {
-             System.out.println("\n\nPlayer X won with row 3 - 5 - 7\n   END OF GAME\n" );
-         }
-         else{
-             System.out.println("\n\nPlayer O won with row 3 - 5 - 7\n   END OF GAME\n" );
-         }
-             
-      
-        return 1;
-     }  
-     else 
-     {
-      
         return 3;
-     }  
-     
-    
+    }
 
-     }
-     
-    
- }
-
-
-
+    public String validator(String userI, String opt1, String opt2)
+    { 
+        Scanner scanner = new Scanner(System.in);
+        boolean validates = false;
+        while(!validates)
+        {
+            if (!userI.equals(opt1) && !userI.equals(opt2))
+            {
+                System.out.println("\nNo valid input, Try again:\n");
+                String newI = scanner.next().trim();
+                userI = newI; 
+            }
+            else{
+                validates = true;
+            }
+            
+        }
+        
+         return userI; 
+    }
+    public void resetBoard() {
+        for (int i = 1; i < board.length; i++) {
+            board[i] = String.valueOf(i).charAt(0);
+        }
+    }
+}
