@@ -17,13 +17,14 @@
 
 
 **How to Use the project 
-   (1) When started the program will show you the usual game table.
-
+   (1) When you start the program, it will welcome you and promt you for a HvsH or HvsC game
+          - Console will be the player O (second one)
+          - you will not be able to change the type of game once chosen 
    (2) It will start with the 'X' player, pronting the user to enter a number that is in the board.
 
    (3) If the player enters a number already selected, the program will prompt the player again. 
 
-   (4) **NOTE**: If you enter a number gretear than 9, the program will only count the first charcter of that number. For instance, if you enter number '10', the program will read your input as '1'. So, if the number has not be selected previously. THAT WILL BE YOUR MOVE. 
+   (4)If there is a winner, the program will close with a message poiting out the winner and winner move, else the program will run until all the possible moves are completed and will close the program with a tie message. 
 
-   (5)If there is a winner, the program will close with a message poiting out the winner and winner move, else the program will run until all the possible moves are completed and will close the program with a tie message. 
+   (5) The program will promt the user to chose to play again or exit. 
   
