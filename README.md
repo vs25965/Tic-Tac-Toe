@@ -1,8 +1,8 @@
 # Tic-Tac-Toe
 
 **Project Title
-   TIC-TAC-TOE part I of overreaching project. 
-
+   TIC-TAC-TOE part II of overreaching project. 
+   
 
 **Project Description 
    This program is a tic-tac-toe game that can be run and play in a human vs human case. 
