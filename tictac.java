@@ -4,7 +4,8 @@ import java.util.Scanner;
 public class tictac {
 
     char board[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-    char number = '1';
+    char player1Mark = 'X';
+    char player2Mark = 'O';
 
     public static void main(String[] args) {
 
@@ -13,13 +14,15 @@ public class tictac {
         boolean playAgain = true;
 
         System.out.println("\n\n**Welcome to Tic Tac Toe Game**");
-        System.out.println("\n\nChoose game mode: Human vs Human type 1 or 2 for Human vs Console\n");
+        System.out.println("\n\nChoose game mode: Human vs Human type (1) or (2) for Human vs Console\n");
         String gameModeT = scanner.next().trim();
-        //createas a boolean to play with the console and sets it to 2 (which is true)
-        String gameMode = db.validator(gameModeT,"2","1");
+        String gameMode = db.validator(gameModeT, "2", "1");
         boolean playWithComputer = (gameMode.equals("2"));
 
-        while(playAgain){
+        // Get custom marks from players
+        db.getCustomMarks();
+
+        while (playAgain) {
 
             db.displayboard();
             for (int i = 1; i <= 5; i++) {
@@ -39,13 +42,12 @@ public class tictac {
             }
 
             System.out.println("Do you want to play again? (yes/no)");
-            Scanner scanner1 = new Scanner(System.in);
-            String responseT = scanner1.nextLine().trim().toLowerCase();
+            String responseT = scanner.nextLine().trim().toLowerCase();
             String response = db.validator(responseT, "yes", "no");
             playAgain = response.equals("yes");
             db.resetBoard();
         }
-        
+
         System.out.println("Thanks for playing!");
     }
 
@@ -64,16 +66,14 @@ public class tictac {
     }
 
     public void choose(int turn, boolean playWithComputer) {
-        char playerSymbol = (turn == 0) ? 'O' : 'X';
+        char playerSymbol = (turn == 0) ? player2Mark : player1Mark;
         Scanner scanner = new Scanner(System.in);
-
-        //conditional checks if playWithComputer (true) and if its turn (O)
+    
         if (playWithComputer && turn == 0) {
             Random random = new Random();
             while (true) {
-                //generates a move between 1-9 (within the index from original board)
                 int move = random.nextInt(9) + 1;
-                if (board[move] != 'O' && board[move] != 'X') {
+                if (board[move] != player1Mark && board[move] != player2Mark) {
                     board[move] = playerSymbol;
                     displayboard();
                     break;
@@ -83,25 +83,28 @@ public class tictac {
             while (true) {
                 boolean validMove = false;
                 System.out.println("\nChoose a number from the board = ");
-                String input = scanner.nextLine().trim(); // Remove leading and trailing whitespace
+                String input = scanner.nextLine().trim();
                 if (input.length() == 1 && Character.isDigit(input.charAt(0))) {
-                    number = input.charAt(0);
-                    for (int i = 1; i <= 9; i++) {
-                        if (number == board[i]) {
-                            board[i] = playerSymbol;
+                    char number = input.charAt(0);
+                    int move = Character.getNumericValue(number);
+                    if (move >= 1 && move <= 9) {
+                        if (board[move] != player1Mark && board[move] != player2Mark) {
+                            board[move] = playerSymbol;
                             displayboard();
                             validMove = true;
-                            break;
+                        } else {
+                            System.out.println("Spot already taken. Choose another spot.");
                         }
+                    } else {
+                        System.out.println("Invalid input. Please enter a number 1-9.");
                     }
                 } else {
-                    System.out.println("Invalid input. Please enter a single digit.");
-                    validMove = false;
+                    System.out.println("Invalid input. Please enter a number 1-9.");
                 }
-
+    
                 if (validMove) {
                     break;
-                } 
+                }
             }
         }
     }
@@ -115,10 +118,10 @@ public class tictac {
 
         for (int[] pos : winPositions) {
             if (board[pos[0]] == board[pos[1]] && board[pos[1]] == board[pos[2]]) {
-                if (board[pos[0]] == 'O') {
-                    System.out.println("\n\nPlayer O won with row " + pos[0] + " - " + pos[1] + " - " + pos[2] + "\n   END OF GAME\n");
-                } else if (board[pos[0]] == 'X') {
-                    System.out.println("\n\nPlayer X won with row " + pos[0] + " - " + pos[1] + " - " + pos[2] + "\n   END OF GAME\n");
+                if (board[pos[0]] == player2Mark) {
+                    System.out.println("\n\nPlayer " + player2Mark + " won with row " + pos[0] + " - " + pos[1] + " - " + pos[2] + "\n   END OF GAME\n");
+                } else if (board[pos[0]] == player1Mark) {
+                    System.out.println("\n\nPlayer " + player1Mark + " won with row " + pos[0] + " - " + pos[1] + " - " + pos[2] + "\n   END OF GAME\n");
                 }
                 return 1;
             }
@@ -126,29 +129,48 @@ public class tictac {
         return 3;
     }
 
-    public String validator(String userI, String opt1, String opt2)
-    { 
+    public String validator(String userI, String opt1, String opt2) {
         Scanner scanner = new Scanner(System.in);
         boolean validates = false;
-        while(!validates)
-        {
-            if (!userI.equals(opt1) && !userI.equals(opt2))
-            {
+        while (!validates) {
+            if (!userI.equals(opt1) && !userI.equals(opt2)) {
                 System.out.println("\nNo valid input, Try again:\n");
                 String newI = scanner.next().trim();
-                userI = newI; 
-            }
-            else{
+                userI = newI;
+            } else {
                 validates = true;
             }
-            
         }
-        
-         return userI; 
+        return userI;
     }
+
     public void resetBoard() {
         for (int i = 1; i < board.length; i++) {
             board[i] = String.valueOf(i).charAt(0);
         }
+    }
+
+    public void getCustomMarks() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Player 1, choose your mark (one character): ");
+        player1Mark = getValidMark(scanner);
+        System.out.println("Player 2, choose your mark (one character): ");
+        player2Mark = getValidMark(scanner);
+    }
+
+    public char getValidMark(Scanner scanner) {
+        while (true) {
+            String input = scanner.nextLine().trim();
+            if (input.length() == 1 && isValidCharacter(input.charAt(0))) {
+                return input.charAt(0);
+            }
+             else {
+                System.out.println("Invalid mark. Please enter a single character (A-Z, a-z, 0-9, or special characters).");
+            }
+        }
+    }
+
+    public boolean isValidCharacter(char c) {
+        return Character.isLetterOrDigit(c) || "!@#$%^&*()_+-=[]{}|;:'\",.<>?/".indexOf(c) >= 0;
     }
 }
